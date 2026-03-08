@@ -34,3 +34,14 @@ pub fn verify_stamp(mac: String) -> bool {
     }
     false
 }
+
+#[tauri::command]
+pub fn remove_stamp() -> Result<String, String> {
+    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    // Mở registry với quyền ghi và xóa các value của tem
+    if let Ok(key) = hkcu.open_subkey_with_flags("SOFTWARE\\ITCheckTool", KEY_SET_VALUE) {
+        let _ = key.delete_value("DigitalStamp");
+        let _ = key.delete_value("StampDate");
+    }
+    Ok("Đã xóa tem thành công".to_string())
+}
